@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -18,9 +19,11 @@ public class ProductController {
     private final AtomicLong counter = new AtomicLong();
 
     public ProductController() {
-        // Початкові дані для демонстрації
-        products.put(counter.incrementAndGet(), new Product(1L, "Laptop", 1200.50));
-        products.put(counter.incrementAndGet(), new Product(2L, "Smartphone", 800.00));
+        products.put(counter.incrementAndGet(),
+                new Product(1L, "Laptop", 1200.50, LocalDate.now().plusDays(5)));
+
+        products.put(counter.incrementAndGet(),
+                new Product(2L, "Smartphone", 800.00, LocalDate.now().plusDays(5)));
     }
 
     // GET /products - отримати всі продукти
@@ -43,10 +46,16 @@ public class ProductController {
     // POST /products - створити новий продукт
     @PostMapping
     public ResponseEntity<Product> createProduct(@RequestBody Product product) {
+        if (product.getDueDate() == null) {
+            product.setDueDate(LocalDate.now().plusDays(5));
+        }
+
         long newId = counter.incrementAndGet();
         product.setId(newId);
         products.put(newId, product);
+
         return new ResponseEntity<>(product, HttpStatus.CREATED);
+
     }
 
     // PUT /products/{id} - оновити існуючий продукт
@@ -55,8 +64,13 @@ public class ProductController {
         if (!products.containsKey(id)) {
             return ResponseEntity.notFound().build();
         }
+        if (updatedProduct.getDueDate() == null) {
+            updatedProduct.setDueDate(LocalDate.now().plusDays(5));
+        }
+
         updatedProduct.setId(id);
         products.put(id, updatedProduct);
+
         return ResponseEntity.ok(updatedProduct);
     }
 
