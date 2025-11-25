@@ -8,7 +8,9 @@ public class Product {
     private double price;
     private LocalDate dueDate;
 
-    public Product(long id, String smartphone, double price) {}
+    public Product() {
+
+    }
 
     public Product(long id, String name, double price, LocalDate dueDate) {
         this.id = id;
