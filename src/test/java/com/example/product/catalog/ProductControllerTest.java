@@ -42,7 +42,7 @@ public class ProductControllerTest {
     @Test
     void shouldCreateNewProduct() throws Exception {
 // Arrange
-        Product savedProduct = new Product(4L, "Keyboard", 75.00, LocalDate.now().plusDays(5));
+        Product savedProduct = new Product(4L, "Keyboard", 75.00);
 // Act & Assert
         mockMvc.perform(post("/products")
                         .contentType(MediaType.APPLICATION_JSON)
