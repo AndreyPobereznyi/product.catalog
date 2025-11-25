@@ -8,8 +8,7 @@ public class Product {
     private double price;
     private LocalDate dueDate;
 
-    // Конструктори, гетери та сетери
-    public Product() {}
+    public Product(long id, String smartphone, double price) {}
 
     public Product(long id, String name, double price, LocalDate dueDate) {
         this.id = id;
@@ -50,4 +49,3 @@ public class Product {
         this.dueDate = dueDate;
     }
 }
-

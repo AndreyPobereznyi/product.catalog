@@ -1,0 +1,39 @@
+# Назва робочого процесу, яка буде відображатися в GitHub
+name: Java CI with Gradle
+
+# Тригери: запускати цей процес при кожному push в будь-яку гілку
+# та при створенні/оновленні Pull Request
+on:
+  push:
+    branches: [ "UnitTest" ]
+  pull_request:
+    branches: [ "UnitTest" ]
+
+# Визначення завдань (jobs), які будуть виконуватися
+jobs:
+  build:
+    # Вказуємо операційну систему для віртуальної машини (runner)
+    runs-on: ubuntu-latest
+
+    # Послідовність кроків (steps) для виконання
+    steps:
+      # Крок 1: Завантаження коду з репозиторію
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Крок 2: Налаштування середовища Java (JDK)
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          # Вмикаємо кешування залежностей Gradle для прискорення наступних збірок
+          cache: gradle
+
+      # Крок 3: Надання дозволу на виконання для Gradle Wrapper
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      # Крок 4: Збірка проєкту та запуск тестів за допомогою Gradle
+      - name: Build and test with Gradle
+        run: ./gradlew build

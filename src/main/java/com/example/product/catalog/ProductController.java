@@ -19,6 +19,7 @@ public class ProductController {
     private final AtomicLong counter = new AtomicLong();
 
     public ProductController() {
+        // Початкові дані
         products.put(counter.incrementAndGet(),
                 new Product(1L, "Laptop", 1200.50, LocalDate.now().plusDays(5)));
 
@@ -26,26 +27,25 @@ public class ProductController {
                 new Product(2L, "Smartphone", 800.00, LocalDate.now().plusDays(5)));
     }
 
-    // GET /products - отримати всі продукти
     @GetMapping
     public List<Product> getAllProducts() {
         return new ArrayList<>(products.values());
     }
 
-    // GET /products/{id} - отримати продукт за ID
     @GetMapping("/{id}")
     public ResponseEntity<Product> getProductById(@PathVariable long id) {
         Product product = products.get(id);
-        if (product!= null) {
+        if (product != null) {
             return ResponseEntity.ok(product);
         } else {
             return ResponseEntity.notFound().build();
         }
     }
 
-    // POST /products - створити новий продукт
     @PostMapping
     public ResponseEntity<Product> createProduct(@RequestBody Product product) {
+
+        // Якщо user не передав dueDate → ставимо today + 5 days
         if (product.getDueDate() == null) {
             product.setDueDate(LocalDate.now().plusDays(5));
         }
@@ -55,15 +55,15 @@ public class ProductController {
         products.put(newId, product);
 
         return new ResponseEntity<>(product, HttpStatus.CREATED);
-
     }
 
-    // PUT /products/{id} - оновити існуючий продукт
     @PutMapping("/{id}")
     public ResponseEntity<Product> updateProduct(@PathVariable long id, @RequestBody Product updatedProduct) {
         if (!products.containsKey(id)) {
             return ResponseEntity.notFound().build();
         }
+
+        // Якщо у PUT-запиті не передали дату → також додаємо +5 днів
         if (updatedProduct.getDueDate() == null) {
             updatedProduct.setDueDate(LocalDate.now().plusDays(5));
         }
@@ -74,7 +74,6 @@ public class ProductController {
         return ResponseEntity.ok(updatedProduct);
     }
 
-    // DELETE /products/{id} - видалити продукт
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable long id) {
         if (products.remove(id) == null) {
